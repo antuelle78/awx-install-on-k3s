@@ -28,7 +28,7 @@ Role Variables
 
 **awx_version**: AWX release, default 21.6.0
 
-**awx_admin_password**: Set admin password for web interface
+**awx_admin_password**: Set admin password for web interface "awxadminpasswd"
 
 **postgres_password:** Set database password, default "mydbpasswd"
 
