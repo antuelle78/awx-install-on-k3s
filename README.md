@@ -18,18 +18,17 @@ Cent0S 8 Stream
 Role Variables
 --------------
 
-k3s_version: The k3s release to deploy, default is v1.25.0+k3s1
+**k3s_version**: The k3s release to deploy, default is v1.25.0+k3s1
 
-operator_version: The awx operator release, default 0.29.0
+**operator_version:** The awx operator release, default 0.29.0
 
-awx_version: AWX release, default 21.6.0
+**awx_version**: AWX release, default 21.6.0
 
 **awx_admin_password**: Set admin password for web interface
 
-**postgres_password: Set database password, default "mydbpasswd"
+**postgres_password:** Set database password, default "mydbpasswd"
 
 **awx_hostname**: Set web address, default "my.awx.home"
-
 
 Example Playbook
 ----------------
