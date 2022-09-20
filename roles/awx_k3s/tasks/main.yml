@@ -1,0 +1,9 @@
+---
+
+- name: Install K3s Redhat OS family
+  include_tasks: redhat_os_family.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Install K3s Debian 0S family
+  include_tasks: debian_os_family.yml
+  when: ansible_os_family == 'Debian'
