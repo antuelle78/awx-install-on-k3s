@@ -4,6 +4,10 @@ Install AWX on k3s
 
 Automated deployment of single node k3s cluster running AWX
 
+Special thanks to @kurokobo for his help. This role is based on his repo:
+
+https://github.com/kurokobo/awx-on-k3s
+
 Requirements
 ------------
 
