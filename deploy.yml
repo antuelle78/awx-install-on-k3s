@@ -6,3 +6,28 @@
     - awx_k3s
   environment:
     NAMESPACE: awx
+  vars_prompt:
+
+    - name: k3s_version
+      prompt: Enter k3s version
+      default: v1.25.0+k3s1
+
+    - name: operator_version
+      prompt: Enter version number for awx operator
+      default: 0.29.0
+
+    - name: awx_version
+      prompt: Which version of AWX do you want to install?
+      default: 21.6.0
+
+    - name: awx_admin_password
+      prompt: Enter web interface password
+      default: mydbpasswd
+
+    - name: postgres_password
+      prompt: Enter postgres database password
+      default: awxadminpasswd
+
+    - name: awx_host_name
+      prompt: Set a hostname/FQDN for your AWX instance
+      default: my.awx.home
