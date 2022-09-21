@@ -36,12 +36,6 @@
   tags:
     - k3s_install
 
-- name: Pause to allow cluster to fully initialize
-  ansible.builtin.pause:
-    minutes: 1
-  tags:
-    - k3s_install
-
 - name: Install required python modules
   ansible.builtin.pip:
     name:
@@ -57,6 +51,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        mode: 0775
         owner: 1000
         group: 0
       with_items:
@@ -104,6 +99,7 @@
     - name: Create base directory
       ansible.builtin.file:
         path: "{{ base_dir }}"
+        mode: 0750
         state: directory
 
     - name: Generate selfsigned certs
@@ -137,4 +133,11 @@
 
     - name: Deploy kustomization manifest
       ansible.builtin.command: kubectl apply -k {{ base_dir }}/
+      changed_when: false
+      register: install_status
+
+    - name: Show install status
+      ansible.builtin.debug:
+        var: install_status.stdout_lines
+
   become: false
