@@ -7,7 +7,7 @@ ansible-navigator:
     environment-variables:
       set:
         ANSIBLE_CONFIG: ansible.cfg
-    image: antuelle78/awx-ee:2.13.4
+    image: antuelle78/awx-ee:latest
     pull:
       #arguments:
         #- "--tls-verify=true"
