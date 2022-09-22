@@ -11,7 +11,7 @@ jobs:
   test:
     name: Molecule
     runs-on: ubuntu-latest
-    stategy:
+    strategy:
       matrix:
         distro:
           - centos8
