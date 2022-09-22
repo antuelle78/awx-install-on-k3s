@@ -17,17 +17,17 @@ jobs:
           - centos8
           - ubuntu20.04
 
-  steps:
-    - name: Check out codebase.
-      uses: 'actions/checkout@v2'
+    steps:
+      - name: Check out codebase.
+        uses: 'actions/checkout@v2'
 
-    - name: Set up Python 3.
-      uses: 'actions/setup-python@v2'
-      with:
-        python-version: '3.x'
+      - name: Set up Python 3.
+        uses: 'actions/setup-python@v2'
+        with:
+          python-version: '3.x'
 
-    - name: Install test dependencies.
-      run: pip3 install molecule docker yamllint ansible-lint
+      - name: Install test dependencies.
+        run: pip3 install molecule docker yamllint ansible-lint
 
-    - name: Run molecule tests
-      run: molecule test
+      - name: Run molecule tests
+        run: molecule test
