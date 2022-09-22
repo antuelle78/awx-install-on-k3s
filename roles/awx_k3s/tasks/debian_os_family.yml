@@ -29,13 +29,6 @@
     state: present
     update_cache: true
 
-- name: Install k3s {{ k3s_version }}
-  ansible.builtin.shell: "curl -sfL https://get.k3s.io/ |
-    INSTALL_K3S_VERSION={'{{ k3s_version }}'}
-    sh -s - --write-kubeconfig-mode 644"
-  tags:
-    - k3s_install
-
 - name: Install required python modules
   ansible.builtin.pip:
     name:
@@ -45,18 +38,64 @@
       - jsonpatch
     executable: pip3
 
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Set k3s action state
+  ansible.builtin.set_fact:
+    installed: true
+  when: ansible_facts.services['k3s.service'] is defined
+
 - block:
 
-    - name: Create data directory
+    - name: Create kubeconfig directory
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: ~/.kube
+        mode: 0700
         state: directory
-        mode: 0775
-        owner: 1000
-        group: 0
-      with_items:
-        - /data/postgres-13
-        - /data/projects
+
+    - name: Create user kubectl configuration
+      ansible.builtin.copy:
+        src: "{{ kubeconfig_src }}"
+        dest: "{{ usr_kubeconfig }}"
+        mode: 0600
+        remote_src: true
+
+    - name: Get Cluster information
+      kubernetes.core.k8s_cluster_info:
+      register: api_status
+  become: false
+  when: ansible_facts.services['k3s.service'] is defined
+
+- name: Get Cluster information
+  kubernetes.core.k8s_cluster_info:
+  register: api_status
+  become: false
+  when: ansible_facts.services['k3s.service'] is defined
+
+- name: Set k3s installed status to false
+  ansible.builtin.set_fact:
+    installed: false
+  when: ansible_facts.services['k3s.service'] is not defined
+
+- name: Install k3s {{ k3s_version }}
+  ansible.builtin.shell: "curl -sfL https://get.k3s.io/ |
+    INSTALL_K3S_VERSION={'{{ k3s_version }}'}
+    sh -s - --write-kubeconfig-mode 644"
+  when: not installed or api_status.version.server.kubernetes.gitVersion != k3s_version
+  tags:
+    - k3s_install
+
+- name: Create data directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0775
+    owner: 1000
+    group: 0
+  with_items:
+    - /data/postgres-13
+    - /data/projects
 
 - block:
     - name: Create kubeconfig directory
