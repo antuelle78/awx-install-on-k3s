@@ -18,7 +18,7 @@ jobs:
           - ubuntu20.04
 
   steps:
-    - name: Check out codebase
+    - name: Check out codebase.
       uses: actions/checkout@v2
 
     - name: Set up Python 3.
