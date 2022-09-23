@@ -35,6 +35,9 @@ Role Variables
 
 **awx_hostname**: Set web address, default "my.awx.home"
 
+**namespace_k3s:** Set the namespace, default "awx"
+
+
 Example Playbook
 ----------------
 

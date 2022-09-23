@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: awx-projects-claim
-  namespace: awx
+  namespace: {{ namespace_k3s }}
 spec:
   accessModes:
     - ReadWriteOnce
