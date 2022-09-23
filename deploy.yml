@@ -20,6 +20,10 @@
       prompt: Which version of AWX do you want to install?
       default: 21.6.0
 
+    - name: namespace_k3s
+      prompt: Set namespace for deployment
+      default: awx
+
     - name: awx_admin_password
       prompt: Enter web interface password
       default: mydbpasswd
