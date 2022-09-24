@@ -81,7 +81,9 @@
 - name: Install k3s {{ k3s_version }}
   ansible.builtin.shell: "curl -sfL https://get.k3s.io/ |
     INSTALL_K3S_VERSION={'{{ k3s_version }}'}
-    sh -s - --write-kubeconfig-mode 644"
+    sh -s - server --cluster-init
+    --tls-san {{ awx_hostname }}
+    --write-kubeconfig-mode 644"
   when: not installed or api_status.version.server.kubernetes.gitVersion != k3s_version
   tags:
     - k3s_install

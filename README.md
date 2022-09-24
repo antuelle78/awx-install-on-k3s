@@ -11,7 +11,7 @@ https://github.com/kurokobo/awx-on-k3s
 Requirements
 ------------
 
-Ubuntu 20.04/22.04
+Ubuntu 20.04/22.04 **Recommended**
 
 Cent0S 8 Stream
 
