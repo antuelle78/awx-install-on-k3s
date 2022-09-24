@@ -1,0 +1,8 @@
+---
+
+- hosts: all
+  become: true
+  roles:
+    - backup_awx_k3s
+  environment:
+    NAMESPACE: awx

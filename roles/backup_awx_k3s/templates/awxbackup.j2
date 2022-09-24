@@ -1,0 +1,10 @@
+---
+apiVersion: awx.ansible.com/v1beta1
+kind: AWXBackup
+metadata:
+  name: {{ awx_backup_name }}
+  namespace: {{ namespace_k3s }}
+spec:
+  deployment_name: awx
+  backup_pvc: awx-backup-claim
+  clean_backup_on_delete: true

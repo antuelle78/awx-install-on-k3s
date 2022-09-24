@@ -1,0 +1,22 @@
+
+---
+
+- hosts: all
+  become: true
+  roles:
+    - backup_awx_k3s
+  environment:
+    NAMESPACE: awx
+  vars_prompt:
+
+    - name: backup_timeout
+      prompt: Set a timeout for backup task
+      default: 540
+
+    - name: awx_backup_name
+      prompt: Enter a name for your backup
+      private: false
+
+    - name: namespace_k3s
+      prompt: Set namespace for backup
+      default: awx

@@ -1,0 +1,127 @@
+---
+# tasks file for backup_awx_k3s
+
+- name: Create data directory for backups storage
+  ansible.builtin.file:
+    path: /data/backup
+    state: directory
+    owner: 1000
+    mode: 0755
+    group: 0
+
+- block:
+
+    - name: Ensure base directory exist
+      ansible.builtin.file:
+        path: "{{ base_dir }}"
+        state: directory
+        mode: 0750
+
+    - name: Create kubeconfig directory
+      ansible.builtin.file:
+        path: ~/.kube
+        mode: 0700
+        state: directory
+
+    - name: Create user kubectl configuration
+      ansible.builtin.copy:
+        src: "{{ kubeconfig_src }}"
+        dest: "{{ usr_kubeconfig }}"
+        mode: 0600
+        remote_src: true
+
+    - name: Copy pvc manifest to host
+      ansible.builtin.template:
+        src: pvc_backups.j2
+        mode: 0644
+        dest: "{{ base_dir }}/pvc_backups.yaml"
+
+    - name: Copy pv manifest to host
+      ansible.builtin.template:
+        src: pv_backups.j2
+        mode: 0644
+        dest: "{{ base_dir }}/pv_backups.yaml"
+
+    - name: Copy kustomize manifest to host
+      ansible.builtin.template:
+        src: kustomize.j2
+        mode: 0644
+        dest: "{{ base_dir }}/kustomization.yaml"
+
+    - name: Copy kustomize manifest to host
+      ansible.builtin.template:
+        src: awxbackup.j2
+        mode: 0644
+        dest: "{{ base_dir }}/awxbackup.yaml"
+
+    - name: Deploy pre-backup resources
+      ansible.builtin.command: kubectl apply -k {{ base_dir }}/
+      changed_when: false
+
+    - name: Create awx backup
+      kubernetes.core.k8s:
+        src: "{{ base_dir }}/awxbackup.yaml"
+        state: present
+        wait: true
+        wait_condition:
+          reason: Successful
+          status: "True"
+          type: Running
+        wait_timeout: "{{ backup_timeout | int }}"
+      register: backup_status
+
+    - name: Show details of successful backup
+      ansible.builtin.debug:
+        var: backup_info
+      vars:
+        backup_info:
+          name: "{{ backup_status.result.metadata.name }}"
+          creation_timestamp: "{{ backup_status.result.metadata.creationTimestamp }}"
+          deployment_name: "{{ backup_status.result.spec.deployment_name }}"
+          backup_pvc: "{{ backup_status.result.status.backupClaim }}"
+          backup_directory: "{{ backup_status.result.status.backupDirectory }}"
+
+  rescue:
+    - name: Clean up failed AWXBackup resource
+      kubernetes.core.k8s:
+        state: absent
+        definition: "{{ base_dir }}/awxback.yaml"
+        wait: true
+
+    - name: End task when backup unsuccessful
+      ansible.builtin.fail:
+        msg: "{{ awx_backup_name }} did not complete successfully"
+
+  become: false
+
+- block:
+
+    - name: Set current time
+      ansible.builtin.set_fact:
+        curr_time: "{{ lookup('pipe', 'date +%s') }}"
+
+    - name: Gather existing backups
+      kubernetes.core.k8s_info:
+        namespace: "{{ namespace_k3s }}"
+        api_version: "{{ api_version }}"
+        kind: "{{ deploy_kind }}"
+      register: curr_backups
+
+    - name: Remove outdated backups
+      kubernetes.core.k8s:
+        api_version: "{{ api_version }}"
+        kind: "{{ deploy_kind }}"
+        namespace: "{{ namespace_k3s }}"
+        name: "{{ item.metadata.name }}"
+        state: absent
+        wait_timeout: "{{ backup_timeout | int }}"
+        wait: true
+      loop: "{{ curr_backups.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+      when: >-
+        (curr_time | int)
+        - ((item.metadata.creationTimestamp | to_datetime('%Y-%m-%dT%H:%M:%S%z')).strftime('%s') | int)
+        > ((retention | int) * 86400)
+  when: (retention | int) > 0
+  become: false
