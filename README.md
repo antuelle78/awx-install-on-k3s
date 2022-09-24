@@ -71,7 +71,9 @@ ansible-navigator run deploy.yml -i YourInventoryFile --skip-tags=k3s_install
 
 ```
 
-5. This repo can also be imported into an existing AWX/Tower instance as a project
+5. This repo can also be imported into an existing AWX/Tower instance as a project:
+
+https://github.com/antuelle78/awx-install-on-k3s/blob/main/Configure%20AWX%20project.pdf
 
 **Ansible Navigator Documentation:**
 
@@ -82,6 +84,30 @@ Access AWX Web Interface
 ----------------
 
 Visit http://my.awx.home after successful deployment when using default values.
+
+
+
+Backup AWX Instance
+----------------
+
+The "backup_awx.yml" play can be used to create a backup of AWX
+
+```
+ansible-playbook -i YourInventoryFile backup_awx.yml
+
+```
+A backup will be created with the name awx-backup-"CurrentDate" with
+a retention of 30 days
+
+If you want to define these values run:
+
+```
+ansible-playbook -i YourInventoryFile backup_awx_intr.yml
+
+```
+and respond to the prompts.
+
+Backup older the retention period will be deleted on each run.
 
 
 license
