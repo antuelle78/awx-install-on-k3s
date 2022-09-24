@@ -107,7 +107,7 @@ ansible-playbook -i YourInventoryFile backup_awx_intr.yml
 ```
 and respond to the prompts.
 
-Backup older the retention period will be deleted on each run.
+Backups older than the retention period will be deleted on each run.
 
 
 license
