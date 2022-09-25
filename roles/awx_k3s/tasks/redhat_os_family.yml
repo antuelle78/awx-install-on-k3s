@@ -40,8 +40,9 @@
     - patchsys
 
 - name: Install required packages
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name:
+      - tar
       - git
       - make
       - python3-pip
@@ -57,10 +58,12 @@
   ansible.builtin.pip:
     name:
       - kubernetes
-      - pyOpenSSL
+      #- pyOpenSSL
       - PyYAML
       - jsonpatch
     executable: pip3
+  ignore_errors: true
+  become: false
 
 - name: Populate service facts
   ansible.builtin.service_facts:

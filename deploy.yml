@@ -26,11 +26,11 @@
 
     - name: awx_admin_password
       prompt: Enter web interface password
-      default: mydbpasswd
+      default: awxadminpasswd
 
     - name: postgres_password
       prompt: Enter postgres database password
-      default: awxadminpasswd
+      default: mydbpasswd
 
     - name: awx_host_name
       prompt: Set a hostname/FQDN for your AWX instance
