@@ -23,7 +23,7 @@ Role Variables
 --------------
 
 
-**k3s_version**: The k3s release to deploy, default is v1.25.0+k3s1
+**k3s_version**: The k3s release to deploy, default is v1.25.2+k3s1
 
 **operator_version:** The awx operator release, default 0.29.0
 
