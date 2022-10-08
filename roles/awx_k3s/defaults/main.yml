@@ -14,6 +14,6 @@ namespace_k3s: awx
 postgres_password: "mydbpasswd"
 awx_admin_password: "awxadminpasswd"
 
-base_dir: ~/base
+base_dir: /home/{{ ansible_user }}/base
 
 awx_hostname: my.awx.home

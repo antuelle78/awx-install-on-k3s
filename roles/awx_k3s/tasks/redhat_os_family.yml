@@ -166,7 +166,7 @@
         state: directory
 
     - name: Generate selfsigned certs
-      ansible.builtin.shell: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -out ./base/tls.crt -keyout ./base/tls.key -subj "/CN={{ awx_hostname }}/O={{ awx_hostname }}" -addext "subjectAltName = DNS:{{ awx_hostname }}"
+      ansible.builtin.shell: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -out "{{ base_dir }}/tls.crt" -keyout "{{ base_dir }}/tls.key" -subj "/CN={{ awx_hostname }}/O={{ awx_hostname }}" -addext "subjectAltName = DNS:{{ awx_hostname }}"
       args:
         creates: "{{ base_dir }}/tls.crt"
 
