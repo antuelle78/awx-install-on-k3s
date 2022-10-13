@@ -32,6 +32,6 @@
       prompt: Enter postgres database password
       default: mydbpasswd
 
-    - name: awx_host_name
+    - name: awx_hostname
       prompt: Set a hostname/FQDN for your AWX instance
       default: my.awx.home
