@@ -19,6 +19,9 @@ Cent0S 8 Stream
 
 2 CPU
 
+**kubernetes.core collection on the control host:** ansible-galaxy collection kubernetes.core
+
+
 Role Variables
 --------------
 
