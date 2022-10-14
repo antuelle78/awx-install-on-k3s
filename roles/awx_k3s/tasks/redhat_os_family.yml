@@ -147,6 +147,7 @@
         repo: "{{ operator_repo }}"
         dest: ~/awx-operator
         version: "{{ operator_version }}"
+        force: yes
 
     - name: Deploy awx operator
       ansible.builtin.command: make deploy
