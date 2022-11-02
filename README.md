@@ -55,30 +55,22 @@ ansible-playbook -i YourInventoryFile deploy.yml
 
 ```
 2. If using ansible-navigator with the config included in his repo,
-   antuelle78/awx-ee:2.13.4 EE image is used and the container is launched on
+   antuelle78/awx-ee:latest EE image is used and the container is launched on
    the host network.
-
-```
-ansible-navigator run deploy.yml -i YourInventoryFile
-
-```
-
-3. Add "-m stdout" to replicate ansible-playbook behaviour when using
-   ansible-navigator
 
 ```
 ansible-navigator run deploy.yml -i YourInventoryFile -m stdout
 
 ```
 
-4. Add "--skip-tags=k3s_install" to bypass reinstalling k3s on subsequent runs.
+3. Add "--skip-tags=k3s_install" to bypass reinstalling k3s on subsequent runs.
 
 ```
 ansible-navigator run deploy.yml -i YourInventoryFile --skip-tags=k3s_install
 
 ```
 
-5. This repo can also be imported into an existing AWX/Tower instance as a project:
+4. This repo can also be imported into an existing AWX/Tower instance as a project:
 
 https://github.com/antuelle78/awx-install-on-k3s/blob/main/Configure%20AWX%20project.pdf
 
