@@ -1,7 +1,7 @@
 ---
 # defaults file for awx_k3s_centosstream
 
-k3s_version: v1.25.4+k3s1
+k3s_version: v1.26.1+k3s1
 kubeconfig_src: /etc/rancher/k3s/k3s.yaml
 usr_kubeconfig: ~/.kube/config
 

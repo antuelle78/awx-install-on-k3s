@@ -10,7 +10,7 @@
 
     - name: k3s_version
       prompt: Enter k3s version
-      default: v1.25.4+k3s1
+      default: v1.26.1+k3s1
       private: false
 
     - name: operator_version
