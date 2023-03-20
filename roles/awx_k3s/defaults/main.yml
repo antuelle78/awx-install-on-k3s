@@ -5,8 +5,8 @@ k3s_version: v1.26.1+k3s1
 kubeconfig_src: /etc/rancher/k3s/k3s.yaml
 usr_kubeconfig: ~/.kube/config
 
-operator_version: 1.1.4
-awx_version: 21.11.0
+operator_version: 1.3.0
+awx_version: 21.13.0
 awx_service_type: nodeport
 operator_repo: https://github.com/ansible/awx-operator.git
 namespace_k3s: awx

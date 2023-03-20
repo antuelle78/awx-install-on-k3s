@@ -32,9 +32,9 @@ Role Variables
 
 **k3s_version**: The k3s release to deploy, default is v1.26.1+k3s1
 
-**operator_version:** The awx operator release, default 1.1.4
+**operator_version:** The awx operator release, default 1.3.0
 
-**awx_version**: AWX release, default 21.11.0
+**awx_version**: AWX release, default 21.13.0
 
 **awx_admin_password**: Set admin password for web interface "awxadminpasswd"
 
