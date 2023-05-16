@@ -1,6 +1,6 @@
 # awx-install-on-k3s
-Install AWX on k3s
 
+Install AWX on k3s
 
 Automated deployment of single node k3s cluster running AWX
 
@@ -8,8 +8,7 @@ Special thanks to @kurokobo for his help. This role is based on his repo:
 
 https://github.com/kurokobo/awx-on-k3s
 
-Requirements
-------------
+## Requirements
 
 Ubuntu 20.04/22.04 **Recommended**
 
@@ -26,15 +25,13 @@ ansible-galaxy collection install kubernetes.core
 
 ```
 
-Role Variables
---------------
-
+## Role Variables
 
 **k3s_version**: The k3s release to deploy, default is v1.26.1+k3s1
 
-**operator_version:** The awx operator release, default 1.3.0
+**operator_version:** The awx operator release, default 2.1.0
 
-**awx_version**: AWX release, default 21.13.0
+**awx_version**: AWX release, default 22.2.0
 
 **awx_admin_password**: Set admin password for web interface "awxadminpasswd"
 
@@ -44,9 +41,7 @@ Role Variables
 
 **namespace_k3s:** Set the namespace, default "awx"
 
-
-Example Playbook
-----------------
+## Example Playbook
 
 1. deploy.yml can be used to execute against an inventory
 
@@ -54,6 +49,7 @@ Example Playbook
 ansible-playbook -i YourInventoryFile deploy.yml
 
 ```
+
 2. If using ansible-navigator with the config included in his repo,
    antuelle78/awx-ee:latest EE image is used and the container is launched on
    the host network.
@@ -78,16 +74,11 @@ https://github.com/antuelle78/awx-install-on-k3s/blob/main/Configure%20AWX%20pro
 
 https://ansible-navigator.readthedocs.io/en/latest/
 
-
-Access AWX Web Interface
-----------------
+## Access AWX Web Interface
 
 Visit http://my.awx.home after successful deployment when using default values.
 
-
-
-Backup AWX Instance
-----------------
+## Backup AWX Instance
 
 The "backup_awx.yml" play can be used to create a backup of AWX
 
@@ -95,6 +86,7 @@ The "backup_awx.yml" play can be used to create a backup of AWX
 ansible-playbook -i YourInventoryFile backup_awx.yml
 
 ```
+
 A backup will be created with the name awx-backup-"CurrentDate" with
 a retention of 30 days
 
@@ -104,19 +96,19 @@ If you want to define these values run:
 ansible-playbook -i YourInventoryFile backup_awx_intr.yml
 
 ```
+
 and respond to the prompts.
 
 Backups older than the retention period will be deleted on each run.
 
-
-license
--------
+## license
 
 GPLv3
 
-Author Information
-------------------
+## Author Information
 
 Name: Michael Nelson
 
 LET'S GET IT AUTOMATED AND BE LAZY :<)
+
+This is some test text this is lome more tex
