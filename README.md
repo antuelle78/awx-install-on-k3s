@@ -110,5 +110,3 @@ GPLv3
 Name: Michael Nelson
 
 LET'S GET IT AUTOMATED AND BE LAZY :<)
-
-This is some test text this is lome more tex
