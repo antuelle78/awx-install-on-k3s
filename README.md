@@ -8,6 +8,7 @@ Special thanks to @kurokobo for his help. This role is based on his repo:
 
 https://github.com/kurokobo/awx-on-k3s
 
+A short video is available here: https://youtu.be/pNHh6Ic-64E
 ## Requirements
 
 Ubuntu 20.04/22.04 **Recommended**
