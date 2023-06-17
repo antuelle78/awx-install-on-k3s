@@ -2,6 +2,8 @@
 
 Install AWX on k3s
 
+**NEW:** Example (4), deploy with Letsencrypte certificate and CLOUDFLARE FQDN
+
 Automated deployment of single node k3s cluster running AWX
 
 Special thanks to @kurokobo for his help. This role is based on his repo:
@@ -49,7 +51,7 @@ if you wish to deploy with a letsencrypt certificate managed by certmanager.
 **email_for_letsencrypt:** Valid email to used for DNS when using awx_k3s_with_valid_ssl.
 It can be added here: roles/awx_k3s_with_valid_ssl/defaults/main.yml
 
-## Example Playbook
+## Examples
 
 1. deploy.yml can be used to execute against an inventory
 
