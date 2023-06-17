@@ -1,0 +1,25 @@
+---
+# defaults file for awx_k3s_centosstream
+
+k3s_version: v1.27.1+k3s1
+kubeconfig_src: /etc/rancher/k3s/k3s.yaml
+usr_kubeconfig: ~/.kube/config
+
+operator_version: 2.2.0
+awx_version: 22.3.0
+awx_service_type: nodeport
+operator_repo: https://github.com/ansible/awx-operator.git
+namespace_k3s: awx
+
+postgres_password: "mydbpasswd"
+awx_admin_password: "awxadminpasswd"
+
+base_dir: "{{ ansible_env.PWD }}/base"
+
+awx_hostname: my.awx.home
+
+cloudflare_api_key: "YOUR_CLOUDFLARE_API_KEY"
+
+cert_manager_url: "https://github.com/jetstack/cert-manager/releases/download/v1.11.2/cert-manager.yaml"
+
+email_for_letsencrypt: "YOUR_EMAIL_FOR_LETSENCRYPT"

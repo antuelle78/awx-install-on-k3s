@@ -1,0 +1,19 @@
+
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: awx-issuer
+spec:
+  acme:
+    email: {{ email_for_letsencrypt }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: awx-issuer
+    solvers:
+      - dns01:
+          cloudflare:
+            email: {{ email_for_letsencrypt }}
+            apiKeySecretRef:
+              name: cloudflare-config
+              key: client-secret

@@ -1,0 +1,7 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - awx_k3s_with_valid_ssl
+  environment:
+    NAMESPACE: awx

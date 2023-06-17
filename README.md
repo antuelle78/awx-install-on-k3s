@@ -9,6 +9,7 @@ Special thanks to @kurokobo for his help. This role is based on his repo:
 https://github.com/kurokobo/awx-on-k3s
 
 A short video is available here: https://youtu.be/pNHh6Ic-64E
+
 ## Requirements
 
 Ubuntu 20.04/22.04 **Recommended**
@@ -42,6 +43,12 @@ ansible-galaxy collection install kubernetes.core
 
 **namespace_k3s:** Set the namespace, default "awx"
 
+**cloudflare_api_key:** Must be define in roles/awx_k3s_with_valid_ssl/defaults/main.yml
+if you wish to deploy with a letsencrypt certificate managed by certmanager.
+
+**email_for_letsencrypt:** Valid email to used for DNS when using awx_k3s_with_valid_ssl.
+It can be added here: roles/awx_k3s_with_valid_ssl/defaults/main.yml
+
 ## Example Playbook
 
 1. deploy.yml can be used to execute against an inventory
@@ -67,7 +74,15 @@ ansible-navigator run deploy.yml -i YourInventoryFile --skip-tags=k3s_install
 
 ```
 
-4. This repo can also be imported into an existing AWX/Tower instance as a project:
+4. If you followed the instructions above and defined an api key for cloudfare as well as
+   a valid email address, then you can run:
+
+```
+ansible-playbook -i YourInventoryFile deploy_nintr_cloudflare.yml
+
+```
+
+5. This repo can also be imported into an existing AWX/Tower instance as a project:
 
 https://github.com/antuelle78/awx-install-on-k3s/blob/main/Configure%20AWX%20project.pdf
 
