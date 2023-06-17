@@ -74,8 +74,9 @@ ansible-navigator run deploy.yml -i YourInventoryFile --skip-tags=k3s_install
 
 ```
 
-4. If you followed the instructions above and defined an api key for cloudfare as well as
+4. If you followed the instructions above and defined an api key for cloudflare as well as
    a valid email address, then you can run:
+   This has only been tested with cloudflare, but might work with other providers.
 
 ```
 ansible-playbook -i YourInventoryFile deploy_nintr_cloudflare.yml
