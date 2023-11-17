@@ -31,7 +31,7 @@ ansible-galaxy collection install kubernetes.core
 
 ## Role Variables
 
-**k3s_version**: The k3s release to deploy, default is v1.27.1+k3s1
+**k3s_version**: The k3s release to deploy, default is v1.28.3+k3s2
 
 **operator_version:** The awx operator release, default 2.7.2
 
