@@ -8,7 +8,7 @@
   vars_prompt:
     - name: k3s_version
       prompt: Enter k3s version
-      default: v1.27.1+k3s1
+      default: v1.28.3+k3s2
       private: false
 
     - name: operator_version
