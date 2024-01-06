@@ -27,7 +27,7 @@
 - name: Install required python modules
   ansible.builtin.pip:
     name:
-      - kubernetes
+      - kubernetes    #==26.1.0
       - pyOpenSSL
       - PyYAML
       - jsonpatch
