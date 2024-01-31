@@ -33,9 +33,9 @@ ansible-galaxy collection install kubernetes.core
 
 **k3s_version**: The k3s release to deploy, default is v1.28.3+k3s2
 
-**operator_version:** The awx operator release, default 2.7.2
+**operator_version:** The awx operator release, default 2.11.0
 
-**awx_version**: AWX release, default 23.4.0
+**awx_version**: AWX release, default 23.7.0
 
 **awx_admin_password**: Set admin password for web interface "awxadminpasswd"
 
