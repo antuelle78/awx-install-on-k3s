@@ -12,8 +12,7 @@ https://github.com/kurokobo/awx-on-k3s
 
 A short video is available here: https://youtu.be/pNHh6Ic-64E
 
-## IMPORTANT NOTES: THIS ROLE WILL ONLY WORK UP TO VERSION 23.9.1
-## OF AWX AND 2.12.1 OF THE AWX-OPERATOR.
+## IMPORTANT NOTES: THIS ROLE WILL ONLY WORK UP TO VERSION 23.9.1 OF AWX AND 2.12.1 OF THE AWX-OPERATOR.
 
 ## Requirements
 
