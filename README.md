@@ -16,7 +16,7 @@ A short video is available here: https://youtu.be/pNHh6Ic-64E
 
 ## Requirements
 
-Ubuntu 20.04/22.04 **Recommended**
+Ubuntu 20.04-24.04 **Recommended**
 
 Cent0S 8 Stream
 
