@@ -1,11 +1,9 @@
 # tasks file for awx_k3s_centosstream Debian OS family
 - name: Make sure all packages are up to date
   ansible.builtin.apt:
-    name: "*"
-    state: latest
+    upgrade: "dist"
     update_cache: true
   register: systemstatus
-  when: ansible_distribution != "Ubuntu"
   tags:
     - patchsys
 - name: Reboot system if needed
@@ -25,13 +23,12 @@
     state: present
     update_cache: true
 - name: Install required python modules
-  ansible.builtin.pip:
+  ansible.builtin.apt:
     name:
-      - kubernetes    #==26.1.0
-      - pyOpenSSL
-      - PyYAML
-      - jsonpatch
-    executable: pip3
+      - python3-kubernetes    # ==26.1.0
+      - python3-openssl
+      - python3-yaml
+      - python3-jsonpatch
 - name: Populate service facts
   ansible.builtin.service_facts:
 - name: Set k3s action state

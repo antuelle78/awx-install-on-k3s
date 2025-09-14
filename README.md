@@ -12,6 +12,9 @@ https://github.com/kurokobo/awx-on-k3s
 
 A short video is available here: https://youtu.be/pNHh6Ic-64E
 
+## IMPORTANT NOTES: THIS ROLE WILL ONLY WORK UP TO VERSION 23.9.1
+## OF AWX AND 2.12.1 OF THE AWX-OPERATOR.
+
 ## Requirements
 
 Ubuntu 20.04/22.04 **Recommended**
@@ -31,11 +34,11 @@ ansible-galaxy collection install kubernetes.core
 
 ## Role Variables
 
-**k3s_version**: The k3s release to deploy, default is v1.28.3+k3s2
+**k3s_version**: The k3s release to deploy, default is v1.33.4+k3s1
 
-**operator_version:** The awx operator release, default 2.11.0
+**operator_version:** The awx operator release, default 2.12.1
 
-**awx_version**: AWX release, default 23.7.0
+**awx_version**: AWX release, default 23.9.1
 
 **awx_admin_password**: Set admin password for web interface "awxadminpasswd"
 

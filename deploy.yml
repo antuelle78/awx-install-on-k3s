@@ -8,17 +8,17 @@
   vars_prompt:
     - name: k3s_version
       prompt: Enter k3s version
-      default: v1.28.3+k3s2
+      default: v1.33.4+k3s1
       private: false
 
     - name: operator_version
       prompt: Enter version number for awx operator
-      default: 2.11.0
+      default: 2.12.1
       private: false
 
     - name: awx_version
       prompt: Which version of AWX do you want to install?
-      default: 23.7.0
+      default: 23.9.1
       private: false
 
     - name: namespace_k3s
