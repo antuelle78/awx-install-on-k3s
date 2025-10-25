@@ -3,13 +3,13 @@ apiVersion: awx.ansible.com/v1beta1
 kind: AWX
 metadata:
   name: awx
-  namespace: awx
+  namespace: {{ namespace_k3s }}
 spec:
   # These parameters are designed for use with:
-  # - AWX Operator: 0.29.0
-  #   https://github.com/ansible/awx-operator/blob/0.29.0/README.md
-  # - AWX: 21.6.0
-  #   https://github.com/ansible/awx/blob/21.6.0/INSTALL.md
+  # - AWX Operator: {{ operator_version }}
+  #   https://github.com/ansible/awx-operator/blob/{{ operator_version }}/README.md
+  # - AWX: {{ awx_version }}
+  #   https://github.com/ansible/awx/blob/{{ awx_version }}/INSTALL.md
 
   admin_user: admin
   admin_password_secret: awx-admin-password

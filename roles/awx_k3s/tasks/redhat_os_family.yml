@@ -87,16 +87,65 @@
   when: not installed or api_status.version.server.kubernetes.gitVersion != k3s_version
   tags:
     - k3s_install
+- name: Create a awx namespace
+  kubernetes.core.k8s:
+    name: "{{ namespace_k3s }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  become: false
+
 - name: Create data directory
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: "0775"
-    owner: 1000
-    group: 0
+    owner: "1000"
+    group: "0"
   with_items:
     - /data/postgres-13
+    - /data/postgres-15
     - /data/projects
+
+- name: Create postgres-15 pv
+  become: false
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: awx-postgres-15-volume
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        capacity:
+          storage: 8Gi
+        hostPath:
+          path: /data/postgres-15
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: awx-postgres-volume
+        volumeMode: Filesystem
+
+- name: Create postgres-15 pvc
+  become: false
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: postgres-15-awx-postgres-15-0
+        namespace: "{{ namespace_k3s }}"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 8Gi
+        storageClassName: awx-postgres-volume
+        volumeMode: Filesystem
+
 - block:
     - name: Create kubeconfig directory
       ansible.builtin.file:
@@ -109,27 +158,16 @@
         dest: "{{ usr_kubeconfig }}"
         mode: 0600
         remote_src: true
-    - name: Create a awx namespace
-      kubernetes.core.k8s:
-        name: "{{ namespace_k3s }}"
-        api_version: v1
-        kind: Namespace
-        state: present
     - name: Clone AWX operator git repository
       ansible.builtin.git:
         repo: "{{ operator_repo }}"
-        dest: ~/awx-operator
+        dest: /tmp/awx-operator
         version: "{{ operator_version }}"
         force: yes
     - name: Deploy awx operator
-      ansible.builtin.command: make deploy
-      args:
-        chdir: ~/awx-operator
+      ansible.builtin.command: kubectl apply -k /tmp/awx-operator/config/default -n {{ namespace_k3s }}
       changed_when: false
-    - name: Clean operator files build files
-      ansible.builtin.file:
-        path: ~/awx-operator/
-        state: absent
+
     - name: Create base directory
       ansible.builtin.file:
         path: "{{ base_dir }}"
@@ -165,5 +203,5 @@
       register: install_status
     - name: Show install status
       ansible.builtin.debug:
-        var: install_status.stdout_lines
+        var: install_status
   become: false

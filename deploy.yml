@@ -13,12 +13,12 @@
 
     - name: operator_version
       prompt: Enter version number for awx operator
-      default: 2.12.1
+      default: 2.19.1
       private: false
 
     - name: awx_version
       prompt: Which version of AWX do you want to install?
-      default: 23.9.1
+      default: 24.6.1
       private: false
 
     - name: namespace_k3s

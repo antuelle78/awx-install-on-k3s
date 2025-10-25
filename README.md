@@ -1,133 +1,152 @@
-# awx-install-on-k3s
+# 🚀 AWX on k3s: Your One-Stop Ansible Automation Hub
 
-Install AWX on k3s
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red)](https://youtu.be/pNHh6Ic-64E)
 
-**NEW:** Example (4), deploy with Letsencrypte certificate and CLOUDFLARE FQDN
+Deploy a full-featured AWX instance on a lightweight k3s Kubernetes cluster with this automated Ansible playbook. This project simplifies the setup of a powerful automation environment on a single node, perfect for development, testing, or small to medium-sized production workloads.
 
-Automated deployment of single node k3s cluster running AWX
+This role is based on the great work of [@kurokobo](https://github.com/kurokobo) and his [awx-on-k3s](https://github.com/kurokobo/awx-on-k3s) repository.
 
-Special thanks to @kurokobo for his help. This role is based on his repo:
+> **Note:** This role is optimized for **AWX version 24.6.1** and **awx-operator 2.19.1**.
 
-https://github.com/kurokobo/awx-on-k3s
+---
 
-A short video is available here: https://youtu.be/pNHh6Ic-64E
+## ✨ Features
 
-## IMPORTANT NOTES: THIS ROLE WILL ONLY WORK UP TO VERSION 23.9.1 OF AWX AND 2.12.1 OF THE AWX-OPERATOR.
+*   **Automated Deployment:** Sets up a single-node k3s cluster and deploys AWX with a single command.
+*   **Lightweight & Efficient:** Uses k3s for a minimal Kubernetes footprint.
+*   **SSL Ready:** Includes a playbook for deploying with a valid Let's Encrypt certificate using cert-manager and Cloudflare.
+*   **Backup & Restore:** Comes with playbooks to easily back up and restore your AWX instance.
+*   **Flexible Configuration:** Easily customize your deployment with a comprehensive set of Ansible variables.
+*   **Ansible Navigator Support:** Includes a configuration for a seamless experience with `ansible-navigator`.
 
-## Requirements
+---
 
-Ubuntu 20.04-24.04 **Recommended**
+## ✅ Prerequisites
 
-Cent0S 8 Stream
+Before you begin, ensure your control node and target host meet the following requirements:
 
-4 GB RAM
+*   **Operating System:**
+    *   Ubuntu 20.04 - 24.04 (Recommended)
+    *   CentOS 8 Stream
+*   **Hardware:**
+    *   4 GB RAM (minimum)
+    *   2 CPU cores (minimum)
+*   **On your Ansible Control Node:**
+    *   The `kubernetes.core` Ansible collection must be installed:
+        ```bash
+        ansible-galaxy collection install kubernetes.core
+        ```
 
-2 CPU
+---
 
-**kubernetes.core collection on the control host:**
+## 🚀 Quick Start
 
-```
-ansible-galaxy collection install kubernetes.core
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/antuelle78/awx-install-on-k3s.git
+    cd awx-install-on-k3s
+    ```
 
-```
+2.  **Create your inventory file** (e.g., `inventory.yml`):
+    ```yaml
+    all:
+      hosts:
+        awx-node:
+          ansible_host: 192.168.122.46
+          ansible_user: your_user
+    ```
 
-## Role Variables
+3.  **Run the deployment playbook:**
+    ```bash
+    ansible-playbook -i inventory.yml deploy.yml
+    ```
+    You will be prompted to enter values for the deployment. To accept the defaults, simply press Enter.
 
-**k3s_version**: The k3s release to deploy, default is v1.33.4+k3s1
+4.  **Access AWX:**
+    Once the playbook is complete, open your browser and navigate to the hostname you configured (default: `http://my.awx.home`).
 
-**operator_version:** The awx operator release, default 2.12.1
+---
 
-**awx_version**: AWX release, default 23.9.1
+## 🛠️ Configuration
 
-**awx_admin_password**: Set admin password for web interface "awxadminpasswd"
+You can customize the deployment by modifying the role variables. The most common variables are prompted during the execution of `deploy.yml`.
 
-**postgres_password:** Set database password, default "mydbpasswd"
+| Variable                | Description                                                                                             | Default Value      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- | ------------------ |
+| `k3s_version`           | The k3s release to deploy.                                                                              | `v1.33.4+k3s1`     |
+| `operator_version`      | The awx-operator release to use.                                                                        | `2.19.1`           |
+| `awx_version`           | The AWX release to deploy.                                                                              | `24.6.1`           |
+| `awx_admin_password`    | The password for the AWX web interface `admin` user.                                                    | `awxadminpasswd`    |
+| `postgres_password`     | The password for the PostgreSQL database.                                                               | `mydbpasswd`       |
+| `awx_hostname`          | The hostname or FQDN for the AWX web interface.                                                         | `my.awx.home`      |
+| `namespace_k3s`         | The Kubernetes namespace for the deployment.                                                            | `awx`              |
+| `cloudflare_api_key`    | Your Cloudflare API key (for SSL deployment). Define in `roles/awx_k3s_with_valid_ssl/defaults/main.yml`. | `""`               |
+| `email_for_letsencrypt` | A valid email for Let's Encrypt registration. Define in `roles/awx_k3s_with_valid_ssl/defaults/main.yml`. | `""`               |
 
-**awx_hostname**: Set web address, default "my.awx.home"
+---
 
-**namespace_k3s:** Set the namespace, default "awx"
+## 🔬 Advanced Usage
 
-**cloudflare_api_key:** Must be define in roles/awx_k3s_with_valid_ssl/defaults/main.yml
-if you wish to deploy with a letsencrypt certificate managed by certmanager.
+### Using Ansible Navigator
 
-**email_for_letsencrypt:** Valid email to used for DNS when using awx_k3s_with_valid_ssl.
-It can be added here: roles/awx_k3s_with_valid_ssl/defaults/main.yml
+This repository is pre-configured for use with `ansible-navigator`. The included `ansible-navigator.yml` uses the `antuelle78/awx-ee:latest` execution environment.
 
-## Examples
-
-1. deploy.yml can be used to execute against an inventory
-
-```
-ansible-playbook -i YourInventoryFile deploy.yml
-
-```
-
-2. If using ansible-navigator with the config included in his repo,
-   antuelle78/awx-ee:latest EE image is used and the container is launched on
-   the host network.
-
-```
-ansible-navigator run deploy.yml -i YourInventoryFile -m stdout
-
-```
-
-3. Add "--skip-tags=k3s_install" to bypass reinstalling k3s on subsequent runs.
-
-```
-ansible-navigator run deploy.yml -i YourInventoryFile --skip-tags=k3s_install
-
-```
-
-4. If you followed the instructions above and defined an api key for cloudflare as well as
-   a valid email address, then you can run:
-   This has only been tested with cloudflare, but might work with other providers.
-
-```
-ansible-playbook -i YourInventoryFile deploy_nintr_cloudflare.yml
-
-```
-
-5. This repo can also be imported into an existing AWX/Tower instance as a project:
-
-https://github.com/antuelle78/awx-install-on-k3s/blob/main/Configure%20AWX%20project.pdf
-
-**Ansible Navigator Documentation:**
-
-https://ansible-navigator.readthedocs.io/en/latest/
-
-## Access AWX Web Interface
-
-Visit http://my.awx.home after successful deployment when using default values.
-
-## Backup AWX Instance
-
-The "backup_awx.yml" play can be used to create a backup of AWX
-
-```
-ansible-playbook -i YourInventoryFile backup_awx.yml
-
+```bash
+ansible-navigator run deploy.yml -i inventory.yml -m stdout
 ```
 
-A backup will be created with the name awx-backup-"CurrentDate" with
-a retention of 30 days
+### Skipping the k3s Installation
 
-If you want to define these values run:
+To speed up subsequent playbook runs, you can skip the k3s installation:
 
-```
-ansible-playbook -i YourInventoryFile backup_awx_intr.yml
-
+```bash
+ansible-playbook -i inventory.yml deploy.yml --skip-tags=k3s_install
 ```
 
-and respond to the prompts.
+### Deploying with a Valid SSL Certificate (Cloudflare)
 
-Backups older than the retention period will be deleted on each run.
+1.  **Edit the defaults file:**
+    Open `roles/awx_k3s_with_valid_ssl/defaults/main.yml` and set your `cloudflare_api_key` and `email_for_letsencrypt`.
 
-## license
+2.  **Run the SSL deployment playbook:**
+    ```bash
+    ansible-playbook -i inventory.yml deploy_nintr_cloudflare.yml
+    ```
 
-GPLv3
+---
 
-## Author Information
+## 📦 Backup and Restore
 
-Name: Michael Nelson
+This repository includes playbooks to back up your AWX instance.
 
-LET'S GET IT AUTOMATED AND BE LAZY :<)
+### Interactive Backup
+
+This playbook will prompt you for the backup name and retention period.
+
+```bash
+ansible-playbook -i inventory.yml backup_awx_intr.yml
+```
+
+### Automated Backup
+
+This playbook uses default values (30-day retention) and will automatically delete backups older than the retention period.
+
+```bash
+ansible-playbook -i inventory.yml backup_awx.yml
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to open an issue or submit a pull request.
+
+## 📄 License
+
+This project is licensed under the **GPLv3**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+### **LET'S GET IT AUTOMATED AND BE LAZY :<)**
+*Michael Nelson*

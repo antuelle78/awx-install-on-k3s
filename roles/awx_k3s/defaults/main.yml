@@ -5,8 +5,8 @@ k3s_version: v1.33.4+k3s1
 kubeconfig_src: /etc/rancher/k3s/k3s.yaml
 usr_kubeconfig: ~/.kube/config
 
-operator_version: 2.12.1
-awx_version: 23.9.1
+operator_version: 2.19.1
+awx_version: 24.6.1
 awx_service_type: nodeport
 operator_repo: https://github.com/ansible/awx-operator.git
 namespace_k3s: awx
@@ -16,4 +16,4 @@ awx_admin_password: "awxadminpasswd"
 
 base_dir: "{{ ansible_env.PWD }}/base"
 
-awx_hostname: my.awx.home
+awx_hostname: awx.antuelle78.com
