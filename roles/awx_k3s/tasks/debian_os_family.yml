@@ -1,4 +1,4 @@
-# tasks file for awx_k3s_centosstream Debian OS family
+# tasks file for awx_k3s Debian OS family
 - name: Make sure all packages are up to date
   ansible.builtin.apt:
     upgrade: "dist"
@@ -6,12 +6,14 @@
   register: systemstatus
   tags:
     - patchsys
+
 - name: Reboot system if needed
   ansible.builtin.reboot:
     reboot_timeout: 240
   when: systemstatus is changed
   tags:
     - patchsys
+
 - name: Install required packages
   ansible.builtin.apt:
     name:
@@ -22,51 +24,51 @@
       - jq
     state: present
     update_cache: true
+
 - name: Install required python modules
   ansible.builtin.apt:
     name:
-      - python3-kubernetes    # ==26.1.0
+      - python3-kubernetes
       - python3-openssl
       - python3-yaml
       - python3-jsonpatch
+
 - name: Populate service facts
   ansible.builtin.service_facts:
-- name: Set k3s action state
+
+- name: Set k3s installed state
   ansible.builtin.set_fact:
-    installed: true
-  when: ansible_facts.services['k3s.service'] is defined
-- block:
+    installed: "{{ ansible_facts.services['k3s.service'] is defined }}"
+
+- name: Setup kubeconfig for user
+  block:
     - name: Create kubeconfig directory
       ansible.builtin.file:
         path: ~/.kube
-        mode: 0700
+        mode: "0700"
         state: directory
     - name: Create user kubectl configuration
       ansible.builtin.copy:
         src: "{{ kubeconfig_src }}"
         dest: "{{ usr_kubeconfig }}"
-        mode: 0600
+        mode: "0600"
         remote_src: true
     - name: Get Cluster information
       kubernetes.core.k8s_cluster_info:
       register: api_status
   become: false
-  when: ansible_facts.services['k3s.service'] is defined
-- name: Get Cluster information
-  kubernetes.core.k8s_cluster_info:
-  register: api_status
-  become: false
-  when: ansible_facts.services['k3s.service'] is defined
-- name: Set k3s installed status to false
-  ansible.builtin.set_fact:
-    installed: false
-  when: ansible_facts.services['k3s.service'] is not defined
+  when: installed
+
 - name: Install k3s {{ k3s_version }}
-  ansible.builtin.shell: "curl -sfL https://get.k3s.io/ | INSTALL_K3S_VERSION={'{{ k3s_version }}'} sh -s - server --cluster-init --tls-san {{ awx_hostname }} --write-kubeconfig-mode 644"
+  ansible.builtin.shell: >-
+    curl -sfL https://get.k3s.io/ |
+    INSTALL_K3S_VERSION='{{ k3s_version }}'
+    sh -s - server --cluster-init --tls-san {{ awx_hostname }} --write-kubeconfig-mode 644
   when: not installed or api_status.version.server.kubernetes.gitVersion != k3s_version
   tags:
     - k3s_install
-- name: Create a awx namespace
+
+- name: Create awx namespace
   kubernetes.core.k8s:
     name: "{{ namespace_k3s }}"
     api_version: v1
@@ -74,20 +76,19 @@
     state: present
   become: false
 
-- name: Create data directory
+- name: Create data directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: "0775"
     owner: "1000"
     group: "0"
-  with_items:
+  loop:
     - /data/postgres-13
     - /data/postgres-15
     - /data/projects
 
-- name: Create postgres-15 pv
-  become: false
+- name: Create postgres-15 persistent volume
   kubernetes.core.k8s:
     state: present
     definition:
@@ -105,9 +106,9 @@
         persistentVolumeReclaimPolicy: Retain
         storageClassName: awx-postgres-volume
         volumeMode: Filesystem
-
-- name: Create postgres-15 pvc
   become: false
+
+- name: Create postgres-15 persistent volume claim
   kubernetes.core.k8s:
     state: present
     definition:
@@ -124,63 +125,74 @@
             storage: 8Gi
         storageClassName: awx-postgres-volume
         volumeMode: Filesystem
+  become: false
 
-- block:
-    - name: Create kubeconfig directory
-      ansible.builtin.file:
-        path: ~/.kube
-        mode: 0700
-        state: directory
-    - name: Create user kubectl configuration
-      ansible.builtin.copy:
-        src: "{{ kubeconfig_src }}"
-        dest: "{{ usr_kubeconfig }}"
-        mode: 0600
-        remote_src: true
+# User-level tasks: git clone and operator deployment
+- name: Clone and deploy AWX operator
+  block:
     - name: Clone AWX operator git repository
       ansible.builtin.git:
         repo: "{{ operator_repo }}"
         dest: /tmp/awx-operator
         version: "{{ operator_version }}"
-        force: yes
-    - name: Deploy awx operator
-      ansible.builtin.command: kubectl apply -k /tmp/awx-operator/config/default -n {{ namespace_k3s }}
+        force: true
+    - name: Create operator kustomization for custom namespace
+      ansible.builtin.copy:
+        dest: /tmp/awx-operator/kustomization.yaml
+        mode: "0644"
+        content: |
+          apiVersion: kustomize.config.k8s.io/v1beta1
+          kind: Kustomization
+          namespace: {{ namespace_k3s }}
+          resources:
+            - config/default
+    - name: Deploy AWX operator
+      ansible.builtin.command: kubectl apply -k /tmp/awx-operator/
       changed_when: false
+  become: false
 
+# Root-level tasks: certificates and manifests
+- name: Prepare AWX deployment manifests
+  block:
     - name: Create base directory
       ansible.builtin.file:
         path: "{{ base_dir }}"
-        mode: 0750
+        mode: "0750"
         state: directory
-    - name: Generate selfsigned certs
-      ansible.builtin.command: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -out "{{ base_dir }}/tls.crt" -keyout "{{ base_dir }}/tls.key" -subj "/CN={{ awx_hostname }}/O={{ awx_hostname }}" -addext "subjectAltName = DNS:{{ awx_hostname }}"
+    - name: Generate self-signed certificates
+      ansible.builtin.command: >-
+        openssl req -x509 -nodes -days 3650 -newkey rsa:2048
+        -out "{{ base_dir }}/tls.crt"
+        -keyout "{{ base_dir }}/tls.key"
+        -subj "/CN={{ awx_hostname }}/O={{ awx_hostname }}"
+        -addext "subjectAltName = DNS:{{ awx_hostname }}"
       args:
         creates: "{{ base_dir }}/tls.crt"
-    - name: Copy pvc manifest to host
+    - name: Copy PVC manifest to host
       ansible.builtin.template:
         src: pvc.j2
-        mode: 0644
         dest: "{{ base_dir }}/pvc.yaml"
-    - name: Copy pv manifest to host
+        mode: "0644"
+    - name: Copy PV manifest to host
       ansible.builtin.template:
         src: pv.j2
-        mode: 0644
         dest: "{{ base_dir }}/pv.yaml"
-    - name: Copy awx manifest to host
+        mode: "0644"
+    - name: Copy AWX manifest to host
       ansible.builtin.template:
         src: awx-deploy.j2
-        mode: 0644
         dest: "{{ base_dir }}/awx.yaml"
+        mode: "0644"
     - name: Copy kustomization manifest to host
       ansible.builtin.template:
         src: kustomization.j2
-        mode: 0644
         dest: "{{ base_dir }}/kustomization.yaml"
-    - name: Deploy kustomization manifest
+        mode: "0644"
+    - name: Deploy AWX kustomization manifest
       ansible.builtin.command: kubectl apply -k {{ base_dir }}/
       changed_when: false
       register: install_status
-    - name: Show install status
-      ansible.builtin.debug:
-        var: install_status
-  become: false
+
+- name: Show install status
+  ansible.builtin.debug:
+    var: install_status

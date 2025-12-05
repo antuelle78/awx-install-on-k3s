@@ -8,11 +8,16 @@ spec:
   # These parameters are designed for use with:
   # - AWX Operator: {{ operator_version }}
   #   https://github.com/ansible/awx-operator/blob/{{ operator_version }}/README.md
-  # - AWX: {{ awx_version }}
-  #   https://github.com/ansible/awx/blob/{{ awx_version }}/INSTALL.md
+  # - AWXai: Custom AI-maintained AWX fork
+  #   https://github.com/antuelle78/AWXai
 
   admin_user: admin
   admin_password_secret: awx-admin-password
+
+  # Use custom AWXai image instead of default AWX
+  image: {{ awx_image }}
+  image_version: {{ awx_version }}
+  image_pull_policy: Always
 
   ingress_type: ingress
   ingress_tls_secret: awx-secret-tls
@@ -33,3 +38,4 @@ spec:
   web_resource_requirements: {}
   task_resource_requirements: {}
   ee_resource_requirements: {}
+  service_type: {{ awx_service_type }}

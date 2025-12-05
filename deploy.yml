@@ -17,24 +17,24 @@
       private: false
 
     - name: awx_version
-      prompt: Which version of AWX do you want to install?
-      default: 24.6.1
+      prompt: Which version of AWXai do you want to install?
+      default: 25.0.1
       private: false
 
     - name: namespace_k3s
       prompt: Set namespace for deployment
-      default: awx
+      default: awxai
       private: false
 
     - name: awx_admin_password
       prompt: Enter web interface password
-      default: awxadminpasswd
+      default: LhTAKSFgTgLynAljakvkdLueVgNUXsQG
 
     - name: postgres_password
       prompt: Enter postgres database password
       default: mydbpasswd
 
     - name: awx_hostname
-      prompt: Set a hostname/FQDN for your AWX instance
-      default: my.awx.home
+      prompt: Set a hostname/FQDN for your AWXai instance
+      default: awxai.antuelle78.com
       private: false

@@ -1,22 +1,23 @@
-# 🚀 AWX on k3s: Your One-Stop Ansible Automation Hub
+# 🚀 AWXai on k3s: AI-Maintained Ansible Automation Hub
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red)](https://youtu.be/pNHh6Ic-64E)
 
-Deploy a full-featured AWX instance on a lightweight k3s Kubernetes cluster with this automated Ansible playbook. This project simplifies the setup of a powerful automation environment on a single node, perfect for development, testing, or small to medium-sized production workloads.
+Deploy a full-featured **AWXai** instance on a lightweight k3s Kubernetes cluster with this automated Ansible playbook. AWXai is an AI-maintained fork of AWX with enhanced features for modern automation workflows.
 
-This role is based on the great work of [@kurokobo](https://github.com/kurokobo) and his [awx-on-k3s](https://github.com/kurokobo/awx-on-k3s) repository.
+This role is based on the great work of [@kurokobo](https://github.com/kurokobo) and his [awx-on-k3s](https://github.com/kurokobo/awx-on-k3s) repository, modified to deploy AWXai instead of standard AWX.
 
-> **Note:** This role is optimized for **AWX version 24.6.1** and **awx-operator 2.19.1**.
+> **Note:** This role is optimized for **AWXai 25.0.1** and **awx-operator 2.19.1**.
 
 ---
 
 ## ✨ Features
 
-*   **Automated Deployment:** Sets up a single-node k3s cluster and deploys AWX with a single command.
+*   **Automated Deployment:** Sets up a single-node k3s cluster and deploys AWXai with a single command.
+*   **AI-Maintained AWX:** Deploys the enhanced AWXai fork with additional features and improvements.
 *   **Lightweight & Efficient:** Uses k3s for a minimal Kubernetes footprint.
 *   **SSL Ready:** Includes a playbook for deploying with a valid Let's Encrypt certificate using cert-manager and Cloudflare.
-*   **Backup & Restore:** Comes with playbooks to easily back up and restore your AWX instance.
+*   **Backup & Restore:** Comes with playbooks to easily back up and restore your AWXai instance.
 *   **Flexible Configuration:** Easily customize your deployment with a comprehensive set of Ansible variables.
 *   **Ansible Navigator Support:** Includes a configuration for a seamless experience with `ansible-navigator`.
 
@@ -52,7 +53,7 @@ Before you begin, ensure your control node and target host meet the following re
     ```yaml
     all:
       hosts:
-        awx-node:
+        awxai-node:
           ansible_host: 192.168.122.46
           ansible_user: your_user
     ```
@@ -63,8 +64,8 @@ Before you begin, ensure your control node and target host meet the following re
     ```
     You will be prompted to enter values for the deployment. To accept the defaults, simply press Enter.
 
-4.  **Access AWX:**
-    Once the playbook is complete, open your browser and navigate to the hostname you configured (default: `http://my.awx.home`).
+4.  **Access AWXai:**
+    Once the playbook is complete, open your browser and navigate to the hostname you configured (default: `http://awxai.antuelle78.com`).
 
 ---
 
@@ -76,11 +77,11 @@ You can customize the deployment by modifying the role variables. The most commo
 | ----------------------- | ------------------------------------------------------------------------------------------------------- | ------------------ |
 | `k3s_version`           | The k3s release to deploy.                                                                              | `v1.33.4+k3s1`     |
 | `operator_version`      | The awx-operator release to use.                                                                        | `2.19.1`           |
-| `awx_version`           | The AWX release to deploy.                                                                              | `24.6.1`           |
-| `awx_admin_password`    | The password for the AWX web interface `admin` user.                                                    | `awxadminpasswd`    |
+| `awx_version`           | The AWXai version to deploy.                                                                            | `25.0.1`           |
+| `awx_admin_password`    | The password for the AWXai web interface `admin` user.                                                  | `LhTAKSFgTgLynAljakvkdLueVgNUXsQG` |
 | `postgres_password`     | The password for the PostgreSQL database.                                                               | `mydbpasswd`       |
-| `awx_hostname`          | The hostname or FQDN for the AWX web interface.                                                         | `my.awx.home`      |
-| `namespace_k3s`         | The Kubernetes namespace for the deployment.                                                            | `awx`              |
+| `awx_hostname`          | The hostname or FQDN for the AWXai web interface.                                                       | `awxai.antuelle78.com` |
+| `namespace_k3s`         | The Kubernetes namespace for the deployment.                                                            | `awxai`            |
 | `cloudflare_api_key`    | Your Cloudflare API key (for SSL deployment). Define in `roles/awx_k3s_with_valid_ssl/defaults/main.yml`. | `""`               |
 | `email_for_letsencrypt` | A valid email for Let's Encrypt registration. Define in `roles/awx_k3s_with_valid_ssl/defaults/main.yml`. | `""`               |
 
