@@ -7,7 +7,7 @@ Deploy a full-featured **AWXai** instance on a lightweight k3s Kubernetes cluste
 
 This role is based on the great work of [@kurokobo](https://github.com/kurokobo) and his [awx-on-k3s](https://github.com/kurokobo/awx-on-k3s) repository, modified to deploy AWXai instead of standard AWX.
 
-> **Note:** This role is optimized for **AWXai 25.0.1** and **awx-operator 2.19.1**.
+> **Note:** This role is optimized for **AWXai 25.1.1** and **awx-operator 2.19.1**.
 
 ---
 
@@ -75,9 +75,9 @@ You can customize the deployment by modifying the role variables. The most commo
 
 | Variable                | Description                                                                                             | Default Value      |
 | ----------------------- | ------------------------------------------------------------------------------------------------------- | ------------------ |
-| `k3s_version`           | The k3s release to deploy.                                                                              | `v1.33.4+k3s1`     |
+| `k3s_version`           | The k3s release to deploy.                                                                              | `v1.34.2+k3s1`     |
 | `operator_version`      | The awx-operator release to use.                                                                        | `2.19.1`           |
-| `awx_version`           | The AWXai version to deploy.                                                                            | `25.0.1`           |
+| `awx_version`           | The AWXai version to deploy.                                                                            | `25.1.1`           |
 | `awx_admin_password`    | The password for the AWXai web interface `admin` user.                                                  | `LhTAKSFgTgLynAljakvkdLueVgNUXsQG` |
 | `postgres_password`     | The password for the PostgreSQL database.                                                               | `mydbpasswd`       |
 | `awx_hostname`          | The hostname or FQDN for the AWXai web interface.                                                       | `awxai.antuelle78.com` |
