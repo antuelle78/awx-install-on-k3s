@@ -1,0 +1,19 @@
+# Ansible inventory files
+inventory*.yml
+inventory*.yaml
+
+# Local configuration
+*.log
+*.retry
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
