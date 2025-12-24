@@ -3,18 +3,26 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red)](https://youtu.be/pNHh6Ic-64E)
 
-Deploy a full-featured **AWXai** instance on a lightweight k3s Kubernetes cluster with this automated Ansible playbook. AWXai is an AI-maintained fork of AWX with enhanced features for modern automation workflows.
+Deploy a full-featured **AWXai** instance on a lightweight k3s Kubernetes cluster with this automated Ansible playbook.
 
-This role is based on the great work of [@kurokobo](https://github.com/kurokobo) and his [awx-on-k3s](https://github.com/kurokobo/awx-on-k3s) repository, modified to deploy AWXai instead of standard AWX.
+## 🎯 What is AWXai?
 
-> **Note:** This role is optimized for **AWXai 25.1.1** and **awx-operator 2.19.1**.
+**AWXai** is an AI-maintained fork of AWX (Ansible AWX) that extends the original project with enhanced features, optimizations, and modern automation workflows.
+
+- **Repository:** https://github.com/antuelle78/AWXai.git
+- **Base:** Forked from official AWX with AI-driven improvements
+- **Maintained by:** @antuelle78
+
+This deployment is based on the excellent work of [@kurokobo](https://github.com/kurokobo) and his [awx-on-k3s](https://github.com/kurokobo/awx-on-k3s) repository, specifically modified to deploy **AWXai** instead of standard AWX.
+
+> **Note:** This role is optimized for **AWXai 25.2.0** and **awx-operator 2.19.1**.
 
 ---
 
 ## ✨ Features
 
+*   **Deploy AWXai:** Installs the AI-maintained AWXai fork from https://github.com/antuelle78/AWXai.git
 *   **Automated Deployment:** Sets up a single-node k3s cluster and deploys AWXai with a single command.
-*   **AI-Maintained AWX:** Deploys the enhanced AWXai fork with additional features and improvements.
 *   **Lightweight & Efficient:** Uses k3s for a minimal Kubernetes footprint.
 *   **SSL Ready:** Includes a playbook for deploying with a valid Let's Encrypt certificate using cert-manager and Cloudflare.
 *   **Backup & Restore:** Comes with playbooks to easily back up and restore your AWXai instance.
@@ -67,6 +75,18 @@ Before you begin, ensure your control node and target host meet the following re
 4.  **Access AWXai:**
     Once the playbook is complete, open your browser and navigate to the hostname you configured (default: `http://awxai.antuelle78.com`).
 
+## 💡 About AWXai
+
+AWXai is a fork of the upstream AWX project that incorporates AI-driven enhancements and optimizations. The project is maintained by @antuelle78 and is available at:
+
+**https://github.com/antuelle78/AWXai.git**
+
+Key differences from standard AWX:
+- AI-maintained codebase with automated improvements
+- Enhanced features for modern automation workflows
+- Regular updates with community-driven optimizations
+- Compatible with the AWX operator ecosystem
+
 ---
 
 ## 🛠️ Configuration
@@ -77,8 +97,9 @@ You can customize the deployment by modifying the role variables. The most commo
 | ----------------------- | ------------------------------------------------------------------------------------------------------- | ------------------ |
 | `k3s_version`           | The k3s release to deploy.                                                                              | `v1.34.2+k3s1`     |
 | `operator_version`      | The awx-operator release to use.                                                                        | `2.19.1`           |
-| `awx_version`           | The AWXai version to deploy.                                                                            | `25.1.1`           |
-| `awx_admin_password`    | The password for the AWXai web interface `admin` user.                                                  | `LhTAKSFgTgLynAljakvkdLueVgNUXsQG` |
+| `awx_image`            | The Docker image for AWXai.                                                                              | `docker.io/antuelle78/awxai` |
+| `awx_version`           | The AWXai version to deploy (from https://github.com/antuelle78/AWXai.git).                         | `25.2.0`           |
+| `awx_admin_password`    | The password for the AWXai web interface `admin` user.                                                  | `omm0uqhfbQxr8ypVBK4UhCFp8QR8wgmw` |
 | `postgres_password`     | The password for the PostgreSQL database.                                                               | `mydbpasswd`       |
 | `awx_hostname`          | The hostname or FQDN for the AWXai web interface.                                                       | `awxai.antuelle78.com` |
 | `namespace_k3s`         | The Kubernetes namespace for the deployment.                                                            | `awxai`            |
@@ -119,7 +140,7 @@ ansible-playbook -i inventory.yml deploy.yml --skip-tags=k3s_install
 
 ## 📦 Backup and Restore
 
-This repository includes playbooks to back up your AWX instance.
+This repository includes playbooks to back up your AWXai instance.
 
 ### Interactive Backup
 
