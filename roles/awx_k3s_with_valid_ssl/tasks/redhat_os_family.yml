@@ -95,7 +95,7 @@
     owner: 1000
     group: 0
   with_items:
-    - /data/postgres-13
+    - /data/postgres-15
     - /data/projects
 - block:
     - name: Create kubeconfig directory
@@ -118,24 +118,28 @@
     - name: Clone AWX operator git repository
       ansible.builtin.git:
         repo: "{{ operator_repo }}"
-        dest: ~/awx-operator
+        dest: /tmp/awx-operator
         version: "{{ operator_version }}"
-        force: yes
-    - name: Deploy awx operator
-      ansible.builtin.command: make deploy
-      args:
-        chdir: ~/awx-operator
+        force: true
+    - name: Create operator kustomization for custom namespace
+      ansible.builtin.copy:
+        dest: /tmp/awx-operator/kustomization.yaml
+        mode: "0644"
+        content: |
+          apiVersion: kustomize.config.k8s.io/v1beta1
+          kind: Kustomization
+          namespace: {{ namespace_k3s }}
+          resources:
+            - config/default
+    - name: Deploy AWX operator
+      ansible.builtin.command: kubectl apply -k /tmp/awx-operator/
       changed_when: false
-    - name: Clean operator files build files
-      ansible.builtin.file:
-        path: ~/awx-operator/
-        state: absent
     - name: Create base directory
       ansible.builtin.file:
         path: "{{ base_dir }}"
         mode: 0755
         state: directory
-    - name: Generate selfsigned certs
+    - name: Generate self-signed certificates
       ansible.builtin.shell: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -out "{{ base_dir }}/tls.crt" -keyout "{{ base_dir }}/tls.key" -subj "/CN={{ awx_hostname }}/O={{ awx_hostname }}" -addext "subjectAltName = DNS:{{ awx_hostname }}"
       args:
         creates: "{{ base_dir }}/tls.crt"

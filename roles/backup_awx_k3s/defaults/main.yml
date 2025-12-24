@@ -1,9 +1,9 @@
 ---
 # defaults file for backup_awx_k3s
 
-namespace_k3s: awx
+namespace_k3s: awxai
 
-base_dir: ~/base
+base_dir: "{{ ansible_env.PWD }}/base"
 
 awx_backup_name: awx-backup-{{ ansible_date_time.date }}
 

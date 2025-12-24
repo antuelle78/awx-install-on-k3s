@@ -6,7 +6,7 @@
   roles:
     - backup_awx_k3s
   environment:
-    NAMESPACE: awx
+    NAMESPACE: awxai
   vars_prompt:
 
     - name: backup_timeout
@@ -19,4 +19,4 @@
 
     - name: namespace_k3s
       prompt: Set namespace for backup
-      default: awx
+      default: awxai

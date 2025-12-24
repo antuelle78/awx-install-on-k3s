@@ -84,7 +84,6 @@
     owner: "1000"
     group: "0"
   loop:
-    - /data/postgres-13
     - /data/postgres-15
     - /data/projects
 
@@ -100,7 +99,7 @@
         accessModes:
           - ReadWriteOnce
         capacity:
-          storage: 8Gi
+          storage: 25Gi
         hostPath:
           path: /data/postgres-15
         persistentVolumeReclaimPolicy: Retain
@@ -122,7 +121,7 @@
           - ReadWriteOnce
         resources:
           requests:
-            storage: 8Gi
+            storage: 25Gi
         storageClassName: awx-postgres-volume
         volumeMode: Filesystem
   become: false

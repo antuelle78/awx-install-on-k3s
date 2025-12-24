@@ -3,16 +3,21 @@ apiVersion: awx.ansible.com/v1beta1
 kind: AWX
 metadata:
   name: awx
-  namespace: awx
+  namespace: {{ namespace_k3s }}
 spec:
   # These parameters are designed for use with:
-  # - AWX Operator: 0.29.0
-  #   https://github.com/ansible/awx-operator/blob/0.29.0/README.md
-  # - AWX: 21.6.0
-  #   https://github.com/ansible/awx/blob/21.6.0/INSTALL.md
+  # - AWX Operator: {{ operator_version }}
+  #   https://github.com/ansible/awx-operator/blob/{{ operator_version }}/README.md
+  # - AWXai: Custom AI-maintained AWX fork
+  #   https://github.com/antuelle78/AWXai
 
   admin_user: admin
   admin_password_secret: awx-admin-password
+
+  # Use custom AWXai image instead of default AWX
+  image: {{ awx_image }}
+  image_version: {{ awx_version }}
+  image_pull_policy: Always
 
   ingress_type: ingress
   ingress_tls_secret: awx-secret-tls
@@ -26,7 +31,7 @@ spec:
   postgres_storage_class: awx-postgres-volume
   postgres_storage_requirements:
     requests:
-      storage: 10Gi
+      storage: 25Gi
 
   projects_persistence: true
   projects_existing_claim: awx-projects-claim
@@ -36,3 +41,4 @@ spec:
   web_resource_requirements: {}
   task_resource_requirements: {}
   ee_resource_requirements: {}
+  service_type: {{ awx_service_type }}

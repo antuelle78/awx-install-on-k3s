@@ -5,4 +5,4 @@
   roles:
     - backup_awx_k3s
   environment:
-    NAMESPACE: awx
+    NAMESPACE: awxai

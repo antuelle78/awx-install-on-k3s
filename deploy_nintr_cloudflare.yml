@@ -4,4 +4,4 @@
   roles:
     - awx_k3s_with_valid_ssl
   environment:
-    NAMESPACE: awx
+    NAMESPACE: awxai

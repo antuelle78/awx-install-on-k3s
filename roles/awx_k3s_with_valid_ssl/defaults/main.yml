@@ -1,22 +1,23 @@
 ---
-# defaults file for awx_k3s_centosstream
+# defaults file for awx_k3s_with_valid_ssl
 
-k3s_version: v1.28.3+k3s2
+k3s_version: v1.34.2+k3s1
 kubeconfig_src: /etc/rancher/k3s/k3s.yaml
 usr_kubeconfig: ~/.kube/config
 
 operator_version: 2.19.1
-awx_version: 24.6.1
+awx_image: docker.io/antuelle78/awxai
+awx_version: 25.2.0
 awx_service_type: nodeport
 operator_repo: https://github.com/ansible/awx-operator.git
-namespace_k3s: awx
+namespace_k3s: awxai
 
 postgres_password: "mydbpasswd"
-awx_admin_password: "awxadminpasswd"
+awx_admin_password: "omm0uqhfbQxr8ypVBK4UhCFp8QR8wgmw"
 
 base_dir: "{{ ansible_env.PWD }}/base"
 
-awx_hostname: my.awx.home
+awx_hostname: awxai.antuelle78.com
 
 cloudflare_api_key: "YOUR_CLOUDFLARE_API_KEY"
 
