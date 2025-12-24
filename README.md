@@ -41,6 +41,10 @@ Before you begin, ensure your control node and target host meet the following re
 *   **Hardware:**
     *   4 GB RAM (minimum)
     *   2 CPU cores (minimum)
+    *   **60 GB disk space** (minimum) - Required for:
+        *   25 Gi for PostgreSQL database
+        *   25 Gi for AWX projects
+        *   10 Gi for system and k3s overhead
 *   **On your Ansible Control Node:**
     *   The `kubernetes.core` Ansible collection must be installed:
         ```bash
@@ -92,6 +96,108 @@ Key differences from standard AWX:
 ## 🛠️ Configuration
 
 You can customize the deployment by modifying the role variables. The most common variables are prompted during the execution of `deploy.yml`.
+
+### Storage Configuration
+
+The deployment uses **25 Gi** for each of the following storage volumes (configurable in templates):
+
+| Volume | Purpose | Template File | Default Size |
+| ------- | ------- | ------------- | ------------ |
+| PostgreSQL | AWX database storage | `roles/awx_k3s/templates/pv.j2` | 25 Gi |
+| Projects | AWX project files | `roles/awx_k3s/templates/pv.j2` | 25 Gi |
+
+**Note:** Backups are stored on a separate volume and can be configured independently in `roles/backup_awx_k3s/templates/pv_backups.j2` (default: 25 Gi).
+
+**Total host storage requirement:** 60 Gi minimum (50 Gi for AWX + 10 Gi for system overhead)
+
+#### Adjusting Storage Size
+
+To modify the storage allocation for your deployment, edit the following files:
+
+**PostgreSQL Volume (PV + PVC):**
+```yaml
+# roles/awx_k3s/templates/pv.j2
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: awx-postgres-15-volume
+spec:
+  capacity:
+    storage: 25Gi  # Change this value
+```
+```yaml
+# roles/awx_k3s/templates/pvc.j2
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-15-awx-postgres-15-0
+spec:
+  resources:
+    requests:
+      storage: 25Gi  # Must match PV
+```
+```yaml
+# roles/awx_k3s/templates/awx-deploy.j2
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+spec:
+  postgres_storage_requirements:
+    requests:
+      storage: 25Gi  # Must match PVC
+```
+
+**Projects Volume (PV + PVC):**
+```yaml
+# roles/awx_k3s/templates/pv.j2
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: awx-projects-volume
+spec:
+  capacity:
+    storage: 25Gi  # Change this value
+```
+```yaml
+# roles/awx_k3s/templates/pvc.j2
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: awx-projects-claim
+spec:
+  resources:
+    requests:
+      storage: 25Gi  # Must match PV
+```
+
+**Backup Volume (PV + PVC) - if using backup playbooks:**
+```yaml
+# roles/backup_awx_k3s/templates/pv_backups.j2
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: awx-backup-volume
+spec:
+  capacity:
+    storage: 25Gi  # Change this value
+```
+```yaml
+# roles/backup_awx_k3s/templates/pvc_backups.j2
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: awx-backup-claim
+spec:
+  resources:
+    requests:
+      storage: 25Gi  # Must match PV
+```
+
+**Important:** When changing storage sizes, ensure consistency across:
+1. PersistentVolume (`pv.j2`, `pv_backups.j2`)
+2. PersistentVolumeClaim (`pvc.j2`, `pvc_backups.j2`)
+3. AWX/AWXBackup CRD specs (`awx-deploy.j2` for postgres)
+
+### Deployment Variables
 
 | Variable                | Description                                                                                             | Default Value      |
 | ----------------------- | ------------------------------------------------------------------------------------------------------- | ------------------ |
