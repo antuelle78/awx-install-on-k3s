@@ -18,3 +18,7 @@ awx_admin_password: "omm0uqhfbQxr8ypVBK4UhCFp8QR8wgmw"
 base_dir: "{{ ansible_env.PWD }}/base"
 
 awx_hostname: awxai.antuelle78.com
+
+# Storage sizes (adjust based on your needs)
+postgres_storage_size: 25Gi
+projects_storage_size: 25Gi

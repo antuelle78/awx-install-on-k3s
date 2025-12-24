@@ -17,3 +17,6 @@ retention: 30
 api_version: "awx.ansible.com/v1beta1"
 
 deploy_kind: AWXBackup
+
+# Storage size for backups (adjust based on your needs)
+backup_storage_size: 25Gi

@@ -24,3 +24,7 @@ cloudflare_api_key: "YOUR_CLOUDFLARE_API_KEY"
 cert_manager_url: "https://github.com/jetstack/cert-manager/releases/download/v1.11.2/cert-manager.yaml"
 
 email_for_letsencrypt: "YOUR_EMAIL_FOR_LETSENCRYPT"
+
+# Storage sizes (adjust based on your needs)
+postgres_storage_size: 25Gi
+projects_storage_size: 25Gi

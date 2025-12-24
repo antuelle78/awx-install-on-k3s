@@ -10,5 +10,5 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 25Gi
+      storage: {{ backup_storage_size }}
   storageClassName: awx-backup-volume

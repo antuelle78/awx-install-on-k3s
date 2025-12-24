@@ -99,103 +99,48 @@ You can customize the deployment by modifying the role variables. The most commo
 
 ### Storage Configuration
 
-The deployment uses **25 Gi** for each of the following storage volumes (configurable in templates):
+The deployment uses variables to control storage sizes for each volume:
 
-| Volume | Purpose | Template File | Default Size |
-| ------- | ------- | ------------- | ------------ |
-| PostgreSQL | AWX database storage | `roles/awx_k3s/templates/pv.j2` | 25 Gi |
-| Projects | AWX project files | `roles/awx_k3s/templates/pv.j2` | 25 Gi |
+| Variable | Purpose | Default | Role File |
+| -------- | ------- | -------- | ---------- |
+| `postgres_storage_size` | PostgreSQL database storage | 25 Gi | `roles/awx_k3s/defaults/main.yml` |
+| `projects_storage_size` | AWX project files | 25 Gi | `roles/awx_k3s/defaults/main.yml` |
+| `backup_storage_size` | Backup storage (if using backups) | 25 Gi | `roles/backup_awx_k3s/defaults/main.yml` |
 
-**Note:** Backups are stored on a separate volume and can be configured independently in `roles/backup_awx_k3s/templates/pv_backups.j2` (default: 25 Gi).
+**Note:** Backups are stored on a separate volume from the main AWX deployment.
 
-**Total host storage requirement:** 60 Gi minimum (50 Gi for AWX + 10 Gi for system overhead)
+**Total host storage requirement:** 60 Gi minimum (25 Gi PostgreSQL + 25 Gi Projects + 10 Gi system overhead)
 
 #### Adjusting Storage Size
 
-To modify the storage allocation for your deployment, edit the following files:
+To modify the storage allocation for your deployment, simply edit the corresponding variable in the role's `defaults/main.yml` file:
 
-**PostgreSQL Volume (PV + PVC):**
 ```yaml
-# roles/awx_k3s/templates/pv.j2
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: awx-postgres-15-volume
-spec:
-  capacity:
-    storage: 25Gi  # Change this value
-```
-```yaml
-# roles/awx_k3s/templates/pvc.j2
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-15-awx-postgres-15-0
-spec:
-  resources:
-    requests:
-      storage: 25Gi  # Must match PV
-```
-```yaml
-# roles/awx_k3s/templates/awx-deploy.j2
-apiVersion: awx.ansible.com/v1beta1
-kind: AWX
-spec:
-  postgres_storage_requirements:
-    requests:
-      storage: 25Gi  # Must match PVC
+# roles/awx_k3s/defaults/main.yml (or awx_k3s_with_valid_ssl)
+postgres_storage_size: 25Gi   # Adjust PostgreSQL storage
+projects_storage_size: 25Gi   # Adjust projects storage
 ```
 
-**Projects Volume (PV + PVC):**
 ```yaml
-# roles/awx_k3s/templates/pv.j2
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: awx-projects-volume
-spec:
-  capacity:
-    storage: 25Gi  # Change this value
-```
-```yaml
-# roles/awx_k3s/templates/pvc.j2
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: awx-projects-claim
-spec:
-  resources:
-    requests:
-      storage: 25Gi  # Must match PV
+# roles/backup_awx_k3s/defaults/main.yml
+backup_storage_size: 25Gi   # Adjust backup storage
 ```
 
-**Backup Volume (PV + PVC) - if using backup playbooks:**
+**Alternative:** You can also override these variables in your playbook or inventory:
+
 ```yaml
-# roles/backup_awx_k3s/templates/pv_backups.j2
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: awx-backup-volume
-spec:
-  capacity:
-    storage: 25Gi  # Change this value
-```
-```yaml
-# roles/backup_awx_k3s/templates/pvc_backups.j2
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: awx-backup-claim
-spec:
-  resources:
-    requests:
-      storage: 25Gi  # Must match PV
+# In your inventory.yml
+all:
+  hosts:
+    awxai-node:
+      ansible_host: 192.168.122.46
+      ansible_user: your_user
+  vars:
+    postgres_storage_size: 50Gi
+    projects_storage_size: 50Gi
 ```
 
-**Important:** When changing storage sizes, ensure consistency across:
-1. PersistentVolume (`pv.j2`, `pv_backups.j2`)
-2. PersistentVolumeClaim (`pvc.j2`, `pvc_backups.j2`)
-3. AWX/AWXBackup CRD specs (`awx-deploy.j2` for postgres)
+The variables automatically propagate to all PersistentVolumes, PersistentVolumeClaims, and AWX/Backup specifications, ensuring consistency across your deployment.
 
 ### Deployment Variables
 
@@ -209,6 +154,9 @@ spec:
 | `postgres_password`     | The password for the PostgreSQL database.                                                               | `mydbpasswd`       |
 | `awx_hostname`          | The hostname or FQDN for the AWXai web interface.                                                       | `awxai.antuelle78.com` |
 | `namespace_k3s`         | The Kubernetes namespace for the deployment.                                                            | `awxai`            |
+| `postgres_storage_size`  | Storage size for PostgreSQL database (e.g., 25Gi, 50Gi, 100Gi).                                       | `25Gi`             |
+| `projects_storage_size`  | Storage size for AWX projects (e.g., 25Gi, 50Gi, 100Gi).                                              | `25Gi`             |
+| `backup_storage_size`   | Storage size for backups (see backup role defaults).                                                          | `25Gi`             |
 | `cloudflare_api_key`    | Your Cloudflare API key (for SSL deployment). Define in `roles/awx_k3s_with_valid_ssl/defaults/main.yml`. | `""`               |
 | `email_for_letsencrypt` | A valid email for Let's Encrypt registration. Define in `roles/awx_k3s_with_valid_ssl/defaults/main.yml`. | `""`               |
 

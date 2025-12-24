@@ -8,7 +8,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 25Gi
+    storage: {{ postgres_storage_size }}
   storageClassName: awx-postgres-volume
   hostPath:
     path: /data/postgres-15
@@ -23,7 +23,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 25Gi
+    storage: {{ projects_storage_size }}
   storageClassName: awx-projects-volume
   hostPath:
     path: /data/projects

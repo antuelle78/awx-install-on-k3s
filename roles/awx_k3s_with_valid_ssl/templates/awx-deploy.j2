@@ -31,7 +31,7 @@ spec:
   postgres_storage_class: awx-postgres-volume
   postgres_storage_requirements:
     requests:
-      storage: 25Gi
+      storage: {{ postgres_storage_size }}
 
   projects_persistence: true
   projects_existing_claim: awx-projects-claim

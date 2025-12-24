@@ -99,7 +99,7 @@
         accessModes:
           - ReadWriteOnce
         capacity:
-          storage: 25Gi
+          storage: {{ postgres_storage_size }}
         hostPath:
           path: /data/postgres-15
         persistentVolumeReclaimPolicy: Retain
@@ -121,7 +121,7 @@
           - ReadWriteOnce
         resources:
           requests:
-            storage: 25Gi
+            storage: {{ postgres_storage_size }}
         storageClassName: awx-postgres-volume
         volumeMode: Filesystem
   become: false
